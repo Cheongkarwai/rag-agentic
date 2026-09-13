@@ -14,7 +14,7 @@ def initialize_research_agent(provider: str = None, model: str = None, api_key: 
 
     if provider.lower() == "gemini":
         gemini_key = api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-        selected_model = model or os.getenv("LLM_MODEL", "gemini-1.5-flash")
+        selected_model = model or os.getenv("LLM_MODEL", "gemini-3.6-flash")
         llm = ChatOpenAI(
             model=selected_model,
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/",

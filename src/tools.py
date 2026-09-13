@@ -1,8 +1,45 @@
 import os
+import requests
+from langchain_core.embeddings import Embeddings
 from langchain_core.tools import tool
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
 from langchain_experimental.utilities import PythonREPL
+
+os.environ["ANONYMIZED_TELEMETRY"] = "False"
+
+class GeminiEmbeddings(Embeddings):
+    """Native Gemini embeddings supporting models/gemini-embedding-001."""
+    def __init__(self, api_key: str, model: str = "models/gemini-embedding-001"):
+        self.api_key = api_key
+        self.model = model if model.startswith("models/") else f"models/{model}"
+
+    def embed_documents(self, texts: list) -> list:
+        results = []
+        batch_size = 50
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i:i + batch_size]
+            url = f"https://generativelanguage.googleapis.com/v1beta/{self.model}:batchEmbedContents?key={self.api_key}"
+            payload = {
+                "requests": [
+                    {"model": self.model, "content": {"parts": [{"text": t}]}}
+                    for t in batch
+                ]
+            }
+            resp = requests.post(url, json=payload)
+            if resp.status_code != 200:
+                raise RuntimeError(f"Gemini Embedding Error ({resp.status_code}): {resp.text}")
+            for e in resp.json().get("embeddings", []):
+                results.append(e["values"])
+        return results
+
+    def embed_query(self, text: str) -> list:
+        url = f"https://generativelanguage.googleapis.com/v1beta/{self.model}:embedContent?key={self.api_key}"
+        payload = {"model": self.model, "content": {"parts": [{"text": text}]}}
+        resp = requests.post(url, json=payload)
+        if resp.status_code != 200:
+            raise RuntimeError(f"Gemini Embedding Error ({resp.status_code}): {resp.text}")
+        return resp.json()["embedding"]["values"]
 
 def get_embeddings():
     provider = os.getenv("LLM_PROVIDER", "").lower()
@@ -14,11 +51,9 @@ def get_embeddings():
 
     if provider == "gemini":
         gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-        return OpenAIEmbeddings(
-            model="text-embedding-004",
-            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-            openai_api_key=gemini_key
-        )
+        if not gemini_key:
+            raise ValueError("GEMINI_API_KEY not found. Please set GEMINI_API_KEY.")
+        return GeminiEmbeddings(api_key=gemini_key)
     else:
         openai_key = os.getenv("OPENAI_API_KEY")
         return OpenAIEmbeddings(

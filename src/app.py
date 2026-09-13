@@ -52,7 +52,7 @@ if provider == "Google Gemini":
     )
     model_choice = st.sidebar.selectbox(
         "Gemini Model",
-        ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"]
+        ["gemini-3.6-flash", "gemini-flash-latest", "gemini-2.5-pro", "gemini-pro-latest"]
     )
 else:
     provider_code = "openai"
