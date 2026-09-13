@@ -13,16 +13,16 @@
    ```
 4. Set up an API key (Google Gemini or OpenAI):
    - **Google Gemini (Recommended / Free Tier via [Google AI Studio](https://aistudio.google.com)):**
-     ```bash
+     ```
      export GEMINI_API_KEY="your-gemini-api-key"
      ```
    - **OpenAI:**
-     ```bash
+     ```
      export OPENAI_API_KEY="your-openai-api-key"
      ```
-   *(Alternatively, you can create a `.env` file from `.env.example`, or simply enter the key directly in the web dashboard sidebar!)*
+   *(Alternatively, you can configure the API key in `.env` file in root directory, or simply enter the key directly in the web dashboard sidebar!)*
 5. Initialize the interactive application dashboard:
    ```bash
-   streamlit run src/app.py
+   ./venv/bin/streamlit run src/app.py
    ```
    *(Or in IntelliJ IDEA: right-click `src/app.py` and select **Run 'app'**)*

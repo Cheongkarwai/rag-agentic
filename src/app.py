@@ -43,9 +43,9 @@ provider = st.sidebar.selectbox(
 
 if provider == "Google Gemini":
     provider_code = "gemini"
-    default_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or os.getenv("LLM_API_KEY", "")
+    default_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY", "")
     api_key_input = st.sidebar.text_input(
-        "Gemini API Key",
+        "Gemini API Key (GEMINI_API_KEY)",
         value=default_key,
         type="password",
         help="Get your free key from Google AI Studio (aistudio.google.com)"
@@ -56,12 +56,12 @@ if provider == "Google Gemini":
     )
 else:
     provider_code = "openai"
-    default_key = os.getenv("OPENAI_API_KEY") or os.getenv("LLM_API_KEY", "")
+    default_key = os.getenv("OPENAI_API_KEY", "")
     api_key_input = st.sidebar.text_input(
-        "OpenAI API Key",
+        "OpenAI API Key (OPENAI_API_KEY)",
         value=default_key,
         type="password",
-        help="Enter your OpenAI API Key"
+        help="Enter your OpenAI API Key (starts with sk-...)"
     )
     model_choice = st.sidebar.selectbox(
         "OpenAI Model",
@@ -72,7 +72,6 @@ else:
 if api_key_input:
     os.environ["LLM_PROVIDER"] = provider_code
     os.environ["LLM_MODEL"] = model_choice
-    os.environ["LLM_API_KEY"] = api_key_input
     if provider_code == "gemini":
         os.environ["GEMINI_API_KEY"] = api_key_input
         os.environ["GOOGLE_API_KEY"] = api_key_input
@@ -81,7 +80,8 @@ if api_key_input:
 
 # 2. Validation Safeguard Layer for API Provisioning
 if not api_key_input:
-    st.error(f"⚠️ {provider} API Key missing. Please provide it in the sidebar or export it in your environment.")
+    required_key_name = "GEMINI_API_KEY" if provider_code == "gemini" else "OPENAI_API_KEY"
+    st.info(f"🔑 **Welcome to the Agentic RAG Platform!**\n\nPlease provide your **{required_key_name}** in the sidebar on the left to start.")
     st.stop()
 
 # 3. Session Initialization Layer for Core Execution Architecture

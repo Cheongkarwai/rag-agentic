@@ -13,14 +13,14 @@ def get_embeddings():
             provider = "openai"
 
     if provider == "gemini":
-        gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or os.getenv("LLM_API_KEY")
+        gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
         return OpenAIEmbeddings(
             model="text-embedding-004",
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
             openai_api_key=gemini_key
         )
     else:
-        openai_key = os.getenv("OPENAI_API_KEY") or os.getenv("LLM_API_KEY")
+        openai_key = os.getenv("OPENAI_API_KEY")
         return OpenAIEmbeddings(
             model="text-embedding-3-small",
             openai_api_key=openai_key

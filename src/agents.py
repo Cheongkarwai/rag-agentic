@@ -13,7 +13,7 @@ def initialize_research_agent(provider: str = None, model: str = None, api_key: 
             provider = os.getenv("LLM_PROVIDER", "openai").lower()
 
     if provider.lower() == "gemini":
-        gemini_key = api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or os.getenv("LLM_API_KEY")
+        gemini_key = api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
         selected_model = model or os.getenv("LLM_MODEL", "gemini-1.5-flash")
         llm = ChatOpenAI(
             model=selected_model,
@@ -22,7 +22,7 @@ def initialize_research_agent(provider: str = None, model: str = None, api_key: 
             openai_api_key=gemini_key
         )
     else:
-        openai_key = api_key or os.getenv("OPENAI_API_KEY") or os.getenv("LLM_API_KEY")
+        openai_key = api_key or os.getenv("OPENAI_API_KEY")
         selected_model = model or os.getenv("LLM_MODEL", "gpt-4o-mini")
         llm = ChatOpenAI(
             model=selected_model,
