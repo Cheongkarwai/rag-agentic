@@ -6,7 +6,7 @@
 Extract the `.zip` archive package into your preferred working directory.
 
 ### 2. Configure Python Virtual Environment
-Set up a clean virtual environment (Python 3.9+ recommended):
+Set up a clean virtual environment (Python 3.12):
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
@@ -58,3 +58,8 @@ python -m streamlit run src/app.py
 
 **Running inside IntelliJ IDEA / PyCharm:**
 - Right-click `src/app.py` and choose **Run 'app'** (direct IDE execution is fully supported).
+
+### Optional
+You can run the evaluation script for measuring the performance
+```bash
+python -m streamlit run src/evaluate.py
